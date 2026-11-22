@@ -165,14 +165,10 @@ class Main extends Sprite
 
 		game.focusLostFramerate = 30;
 		FlxG.fixedTimestep = false;
-<<<<<<< HEAD
 
 		if (!funkin.backend.system.Controls.instance.mobileC) FlxG.scaleMode = scaleMode = new FunkinRatioScaleMode();
-=======
-		FlxG.scaleMode = scaleMode = new FunkinRatioScaleMode();
 		FlxG.sound.applySoundCurve = applySoundCurve;
 		FlxG.sound.reverseSoundCurve = reverseSoundCurve;
->>>>>>> upstream/main
 
 		Conductor.init();
 		EventManager.init();
