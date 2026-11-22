@@ -33,7 +33,7 @@ import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 /* Basic Mobile Stuffs */
 import mobile.*;
 import mobile.flixel.controls.*;
-import mobile.flixel.screen.ScreenUtil;
+import mobile.ScreenUtil;
 import mobile.backend.MobileUtil;
 
 using StringTools;
