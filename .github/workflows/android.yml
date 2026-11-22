@@ -1,4 +1,5 @@
 name: Android Build
+name: Android Build
 on: workflow_dispatch
 jobs:
   build:
@@ -73,6 +74,11 @@ jobs:
 
       - name: Build Lime native library for Android
         run: |
+          F=$(find .haxelib/lime/git/project -name OpenGLBindings.cpp | head -n 1)
+          echo "Parcheando $F"
+          sed -i 's/\bglClearDepth\b *(/glClearDepthf (/g' "$F"
+          sed -i 's/\bglDepthRange\b *(/glDepthRangef (/g' "$F"
+          grep -n "glClearDepth\|glDepthRange" "$F"
           haxelib run lime rebuild android -arm64 -release
 
       - name: Building the game
