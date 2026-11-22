@@ -73,12 +73,16 @@ jobs:
 
       - name: Build Lime native library for Android
         run: |
-          F=$(find .haxelib/lime/git/project -name OpenGLBindings.cpp | head -n 1)
+          LIME=.haxelib/lime/git
+          git -C $LIME log -1 --format="Lime commit: %H" || true
+          rm -rf $LIME/project/obj
+          rm -rf $LIME/ndll/Android
+          F=$(find $LIME/project -name OpenGLBindings.cpp | head -n 1)
           echo "Parcheando $F"
           sed -i 's/\bglClearDepth\b *(/glClearDepthf (/g' "$F"
           sed -i 's/\bglDepthRange\b *(/glDepthRangef (/g' "$F"
           grep -n "glClearDepth\|glDepthRange" "$F"
-          haxelib run lime rebuild android -arm64 -release
+          haxelib run lime rebuild android -arm64 -release -clean
 
       - name: Building the game
         run: |
