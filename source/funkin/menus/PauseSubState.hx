@@ -58,14 +58,11 @@ class PauseSubState extends MusicBeatSubstate
 		if (menuItems.contains("Exit to charter") && !PlayState.chartingMode)
 			menuItems.remove("Exit to charter");
 
-<<<<<<< HEAD
 		if (controls.mobileC)
 			menuItems.remove("Change Controls");
 
 		add(parentDisabler = new FunkinParentDisabler());
-=======
 		add(parentDisabler = new FunkinParentDisabler(parentDisablerExcludeList));
->>>>>>> upstream/main
 
 		pauseScript = Script.create(Paths.script(script));
 		pauseScript.setParent(this);
