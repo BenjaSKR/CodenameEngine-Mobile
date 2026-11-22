@@ -74,23 +74,16 @@ jobs:
       - name: Build Lime native library for Android
         run: |
           LIME=.haxelib/lime/git
-          echo "== Antes de actualizar"
-          git -C $LIME log -1 --format="Lime commit: %H %s" || true
-          git -C $LIME remote -v || true
-          git -C $LIME fetch --depth 1 origin HEAD
-          git -C $LIME reset --hard FETCH_HEAD
-          git -C $LIME clean -fdx project/obj ndll/Android || true
-          echo "== Despues de actualizar"
           git -C $LIME log -1 --format="Lime commit: %H %s"
           rm -rf $LIME/project/obj
           rm -rf $LIME/ndll/Android
-          echo "== Definiciones de GetEnv"
-          grep -rn "JNI::GetEnv *()" $LIME/project/src | grep -v "(JNIEnv" || true
           F=$(find $LIME/project -name OpenGLBindings.cpp | head -n 1)
-          echo "Parcheando $F"
           sed -i 's/\bglClearDepth\b *(/glClearDepthf (/g' "$F"
           sed -i 's/\bglDepthRange\b *(/glDepthRangef (/g' "$F"
-          grep -n "glClearDepth\|glDepthRange" "$F"
+          S=$LIME/project/src/backend/sdl/SDLSystem.cpp
+          sed -i 's/void \*JNI::GetEnv () {/void *JNI_GetEnv_unused () {/' "$S"
+          echo "== GetEnv despues del parche"
+          grep -rn "GetEnv *() *{\|JNI_GetEnv_unused" $LIME/project/src | grep -v "(JNIEnv" || true
           haxelib run lime rebuild android -arm64 -release -clean
 
       - name: Building the game
