@@ -8,6 +8,6 @@ import funkin.editors.ui.notifications.*;
 using funkin.editors.ui.UIUtil;
 import flixel.util.typeLimit.OneOfTwo;
 import flixel.input.mouse.FlxMouse;
-import mobile.flixel.screen.ScreenUtil;
+import mobile.ScreenUtil;
 import funkin.backend.system.Controls;
 #end
