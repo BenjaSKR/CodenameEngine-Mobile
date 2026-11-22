@@ -74,9 +74,18 @@ jobs:
       - name: Build Lime native library for Android
         run: |
           LIME=.haxelib/lime/git
-          git -C $LIME log -1 --format="Lime commit: %H" || true
+          echo "== Antes de actualizar"
+          git -C $LIME log -1 --format="Lime commit: %H %s" || true
+          git -C $LIME remote -v || true
+          git -C $LIME fetch --depth 1 origin HEAD
+          git -C $LIME reset --hard FETCH_HEAD
+          git -C $LIME clean -fdx project/obj ndll/Android || true
+          echo "== Despues de actualizar"
+          git -C $LIME log -1 --format="Lime commit: %H %s"
           rm -rf $LIME/project/obj
           rm -rf $LIME/ndll/Android
+          echo "== Definiciones de GetEnv"
+          grep -rn "JNI::GetEnv *()" $LIME/project/src | grep -v "(JNIEnv" || true
           F=$(find $LIME/project -name OpenGLBindings.cpp | head -n 1)
           echo "Parcheando $F"
           sed -i 's/\bglClearDepth\b *(/glClearDepthf (/g' "$F"
