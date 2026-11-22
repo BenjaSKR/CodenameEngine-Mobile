@@ -82,7 +82,10 @@ jobs:
           sed -i 's/\bglDepthRange\b *(/glDepthRangef (/g' "$F"
           S=$LIME/project/src/backend/sdl/SDLSystem.cpp
           sed -i 's/void \*JNI::GetEnv () {/void *JNI_GetEnv_unused () {/' "$S"
-          echo "== GetEnv despues del parche"
+          B=$LIME/project/Build.xml
+          sed -i 's|<lib name="-L../ndll/Android" />|<lib name="-L../ndll/Android" /><lib name="-lGLESv3" />|' "$B"
+          echo "== Parches aplicados"
+          grep -n "GLESv3" "$B"
           grep -rn "GetEnv *() *{\|JNI_GetEnv_unused" $LIME/project/src | grep -v "(JNIEnv" || true
           haxelib run lime rebuild android -arm64 -release -clean
 
