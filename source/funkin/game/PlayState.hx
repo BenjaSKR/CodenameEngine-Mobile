@@ -666,6 +666,10 @@ class PlayState extends MusicBeatState
 		// SCRIPTING & DATA INITIALIZATION
 		#if REGION
 		instance = this;
+		
+		// AQUI LIMPIAMOS LA CACHÉ DE LAS NOTAS CADA VEZ QUE ENTRA UNA CANCIÓN
+		@:privateAccess Note.__cachedFrames.clear();
+
 		if (FlxG.sound.music != null) FlxG.sound.music.stop();
 
 		PauseSubState.script = Flags.DEFAULT_PAUSE_SCRIPT;
