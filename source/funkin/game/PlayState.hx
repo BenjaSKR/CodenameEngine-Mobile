@@ -660,6 +660,7 @@ class PlayState extends MusicBeatState
 
 	@:dox(hide) override public function create()
 	{
+		funkin.backend.utils.LoadTimer.start('PlayState ' + (SONG != null && SONG.meta != null ? SONG.meta.name : '?'));
 		Note.__customNoteTypeExists = [];
 
 		// SCRIPTING & DATA INITIALIZATION
@@ -714,6 +715,7 @@ class PlayState extends MusicBeatState
 
 		if (SONG.stage == null || SONG.stage.trim() == "") SONG.stage = Flags.DEFAULT_STAGE;
 		add(stage = new Stage(SONG.stage));
+		funkin.backend.utils.LoadTimer.mark('stage cargado');
 
 		if (!chartingMode || Options.charterEnablePlaytestScripts) {
 			switch(SONG.meta.name) {
@@ -762,7 +764,9 @@ class PlayState extends MusicBeatState
 		strumLine = new FlxObject(0, 50, FlxG.width, 10);
 		strumLine.scrollFactor.set();
 
+		funkin.backend.utils.LoadTimer.mark('antes de generateSong (scripts, personajes)');
 		generateSong(SONG);
+		funkin.backend.utils.LoadTimer.mark('generateSong total');
 
 		for(noteType in SONG.noteTypes) {
 			var scriptPath = Paths.script('data/notes/${noteType}');
@@ -814,6 +818,7 @@ class PlayState extends MusicBeatState
 		}
 
 		add(strumLines);
+		funkin.backend.utils.LoadTimer.mark('strumlines creadas');
 
 		splashHandler = new SplashHandler();
 		add(splashHandler);
@@ -821,6 +826,7 @@ class PlayState extends MusicBeatState
 		scripts.set("SONG", SONG);
 		scripts.load();
 		scripts.call("create");
+		funkin.backend.utils.LoadTimer.mark('scripts load + call create');
 		#end
 
 		// HUD INITIALIZATION & CAMERA INITIALIZATION
@@ -833,6 +839,7 @@ class PlayState extends MusicBeatState
 
 		for(str in strumLines)
 			str.generate(str.data, (chartingMode && Charter.startHere) ? Charter.startTime : null);
+		funkin.backend.utils.LoadTimer.mark('notas generadas (str.generate)');
 
 		FlxG.camera.follow(camFollow, LOCKON, Flags.DEFAULT_CAMERA_FOLLOW_SPEED);
 		FlxG.camera.zoom = defaultCamZoom;
@@ -925,6 +932,7 @@ class PlayState extends MusicBeatState
 	}
 
 	@:dox(hide) public override function createPost() {
+		funkin.backend.utils.LoadTimer.mark('FIN de create()');
 		startCutscene("", cutscene, null, true);
 		super.createPost();
 
@@ -1178,6 +1186,7 @@ class PlayState extends MusicBeatState
 		}
 
 		FlxG.sound.setMusic(inst = FlxG.sound.load(Assets.getMusic(Paths.inst(SONG.meta.name, difficulty, SONG.meta.instSuffix))));
+		funkin.backend.utils.LoadTimer.mark('  inst cargado (decodificacion audio)');
 
 		var vocalsPath = Paths.voices(SONG.meta.name, difficulty, SONG.meta.vocalsSuffix);
 		if (SONG.meta.needsVoices && Assets.exists(vocalsPath))
