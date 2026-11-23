@@ -415,8 +415,26 @@ class FlxSound extends FlxBasic {
 		if ((embeddedSound is Sound)) _sound = embeddedSound;
 		else if ((embeddedSound is Class)) _sound = Type.createInstance(embeddedSound, []);
 		else if ((embeddedSound is String)) {
-			if (Assets.exists(embeddedSound, AssetType.MUSIC) && this == FlxG.sound.music)
-				_sound = Assets.getMusic(embeddedSound);
+			if (Assets.exists(embeddedSound, AssetType.MUSIC) && this == FlxG.sound.music) {
+				// CARGA ASÍNCRONA PARA EVITAR CONGELAMIENTO EN ANDROID
+				var path = Assets.getPath(embeddedSound);
+				if (path != null) {
+					_sound = new Sound();
+					var loadCallback:Event->Void = null;
+					loadCallback = function(e:Event) {
+						(e.target : IEventDispatcher).removeEventListener(e.type, loadCallback);
+						if (_sound == e.target) {
+							_length = _sound.length;
+							makeChannel(); // Crear el canal AHORA que ya cargó
+						}
+					}
+					_sound.addEventListener(Event.COMPLETE, loadCallback, false, 0, true);
+					_sound.load(new URLRequest(path));
+				} else {
+					// Fallback por si algo falla
+					_sound = Assets.getMusic(embeddedSound);
+				}
+			}
 			else if (Assets.exists(embeddedSound, AssetType.SOUND))
 				_sound = Assets.getSound(embeddedSound);
 			else
@@ -502,7 +520,9 @@ class FlxSound extends FlxBasic {
 	 * @since raltyMod
 	 */
 	function makeChannel() @:privateAccess {
-		if (_sound.__buffer == null) return;
+		// Protección añadida: evita crasheo si el audio asíncrono aún no ha terminado de cargar
+		if (_sound == null || _sound.__buffer == null) return; 
+		
 		if (_source != null) _source.dispose();
 
 		if (_channel == null) (_source = (_channel = new SoundChannel(null)).__source = new AudioSource(_sound.__buffer)).gain = 0;
