@@ -45,7 +45,13 @@ class ModsFolderLibrary extends AssetLibrary implements IModsAssetLibrary {
 			return null;
 		var path = getAssetPath();
 		editedTimes[id] = FileSystem.stat(path).mtime.getTime();
-		var e = AudioBuffer.fromFile(path);
+		// Leer el archivo completo a memoria y decodificar desde ahi: evita miles de lecturas de 4KB por SDL/GC en Android.
+		var e:AudioBuffer = null;
+		try {
+			var bytes = sys.io.File.getBytes(path);
+			if (bytes != null && bytes.length > 0) e = AudioBuffer.fromBytes(bytes);
+		} catch (ex) {}
+		if (e == null) e = AudioBuffer.fromFile(path);
 		// LimeAssets.cache.audio.set('$libName:$id', e);
 		return e;
 	}
