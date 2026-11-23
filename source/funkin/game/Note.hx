@@ -118,10 +118,12 @@ class Note extends FlxSprite
 	// Deprecated?
 	@:dox(hide) public var tripTimer:Float = 0; // ranges from 0 to 1
 
-	private static function customTypePathExists(path:String) {
-		if (__customNoteTypeExists.exists(path))
-			return __customNoteTypeExists[path];
-		return __customNoteTypeExists[path] = Assets.exists(path);
+	// Se guarda por NOMBRE de tipo y la ruta (Paths.image) solo se calcula una vez por tipo.
+	// Antes se calculaba en cada nota y, al no existir, Paths.getPath recorria todas las carpetas (~14 ms por nota).
+	private static function customTypePathExists(type:String) {
+		if (__customNoteTypeExists.exists(type))
+			return __customNoteTypeExists[type];
+		return __customNoteTypeExists[type] = Assets.exists(Paths.image('game/notes/' + type));
 	}
 
 	static var DEFAULT_FIELDS:Array<String> = ["time", "id", "type", "sLen"];
@@ -157,9 +159,8 @@ class Note extends FlxSprite
 		this.noteData = noteData.id.getDefault(0);
 
 		__t = funkin.backend.utils.LoadTimer.acc('Note.new A: campos y extra', __t);
-		var customType = Paths.image('game/notes/${this.noteType}');
 		var event = EventManager.get(NoteCreationEvent).recycle(this, strumID, this.noteType, noteTypeID, PlayState.instance.strumLines.members.indexOf(strumLine), mustPress,
-			(this.noteType != null && customTypePathExists(customType)) ? 'game/notes/${this.noteType}' : 'game/notes/default', @:privateAccess strumLine.strumScale * Flags.DEFAULT_NOTE_SCALE, animSuffix);
+			(this.noteType != null && customTypePathExists(this.noteType)) ? 'game/notes/${this.noteType}' : 'game/notes/default', @:privateAccess strumLine.strumScale * Flags.DEFAULT_NOTE_SCALE, animSuffix);
 
 		__t = funkin.backend.utils.LoadTimer.acc('Note.new B: Paths.image + customTypePathExists + recycle', __t);
 		if (PlayState.instance != null)
