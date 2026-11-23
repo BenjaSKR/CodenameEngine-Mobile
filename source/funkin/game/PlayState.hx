@@ -1164,6 +1164,19 @@ class PlayState extends MusicBeatState
 		curSong = songData.meta.name.toLowerCase();
 		curSongID = curSong.replace(" ", "-");
 
+		// Decodificar inst y todas las voces EN PARALELO (antes se decodificaban una tras otra)
+		{
+			var preloadIds:Array<String> = [Paths.inst(SONG.meta.name, difficulty, SONG.meta.instSuffix)];
+			if (SONG.meta.needsVoices) {
+				preloadIds.push(Paths.voices(SONG.meta.name, difficulty, SONG.meta.vocalsSuffix));
+				if (SONG.strumLines != null)
+					for (sl in SONG.strumLines)
+						if (sl.vocalsSuffix != null && sl.vocalsSuffix != "")
+							preloadIds.push(Paths.voices(SONG.meta.name, difficulty, sl.vocalsSuffix));
+			}
+			funkin.backend.utils.AudioPreloader.preload(preloadIds);
+		}
+
 		FlxG.sound.setMusic(inst = FlxG.sound.load(Assets.getMusic(Paths.inst(SONG.meta.name, difficulty, SONG.meta.instSuffix))));
 
 		var vocalsPath = Paths.voices(SONG.meta.name, difficulty, SONG.meta.vocalsSuffix);
