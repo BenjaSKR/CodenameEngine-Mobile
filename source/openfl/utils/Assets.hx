@@ -247,15 +247,21 @@ class Assets
 			var sound = cache.getSound(id);
 			if (isValidSound(sound)) return sound;
 		}
-		/*#if (lime_vorbis && lime > "7.9.0" && !macro)
+		#if (lime_vorbis && !macro)
 		if (Options.streamedMusic) {
-			var bytes = getBytes(id);
-			if (bytes == null) return null;
-			// TODO: What if it is a WAV or non-Vorbis file?
-			var vorbisFile = VorbisFile.fromBytes(bytes);
-			if (vorbisFile != null) return Sound.fromAudioBuffer(AudioBuffer.fromVorbisFile(vorbisFile));
+			try {
+				var bytes:haxe.io.Bytes = cast getBytes(id);
+				if (bytes != null && bytes.length > 0) {
+					// Solo OGG Vorbis: si no lo es, fromBytes devuelve null y se usa la carga normal.
+					var vorbisFile = VorbisFile.fromBytes(lime.utils.Bytes.fromBytes(bytes));
+					if (vorbisFile != null) {
+						var buf = AudioBuffer.fromVorbisFile(vorbisFile);
+						if (buf != null) return Sound.fromAudioBuffer(buf);
+					}
+				}
+			} catch (e:Dynamic) {}
 		}
-		#end*/
+		#end
 		return if (staticFallback) getSound(id, useCache); else null;
 	}
 
