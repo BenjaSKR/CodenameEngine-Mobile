@@ -43,6 +43,13 @@ jobs:
         run: |
           haxe -cp commandline -D analyzer-optimize --run Main setup -s
 
+      - name: Pin hscript-improved to the version this port was made for
+        run: |
+          cd .haxelib/hscript-improved/git
+          git fetch --depth 1 origin 68358bb08440be64fbd2d36928b192f2119a2385
+          git checkout FETCH_HEAD
+          git log -1 --format="hscript-improved: %h %ad %s" --date=short
+
       - name: Configure Android
         run: |
           haxelib run lime setup -alias -y
