@@ -127,6 +127,7 @@ class Note extends FlxSprite
 	static var DEFAULT_FIELDS:Array<String> = ["time", "id", "type", "sLen"];
 
 	public function new(strumLine:StrumLine, noteData:ChartNote, sustain:Bool = false, sustainLength:Float = 0, sustainOffset:Float = 0, ?prev:Note) {
+		var __t = funkin.backend.utils.LoadTimer.now();
 		super();
 
 		moves = false;
@@ -155,12 +156,15 @@ class Note extends FlxSprite
 		this.strumTime = noteData.time.getDefault(0) + sustainOffset;
 		this.noteData = noteData.id.getDefault(0);
 
+		__t = funkin.backend.utils.LoadTimer.acc('Note.new A: campos y extra', __t);
 		var customType = Paths.image('game/notes/${this.noteType}');
 		var event = EventManager.get(NoteCreationEvent).recycle(this, strumID, this.noteType, noteTypeID, PlayState.instance.strumLines.members.indexOf(strumLine), mustPress,
 			(this.noteType != null && customTypePathExists(customType)) ? 'game/notes/${this.noteType}' : 'game/notes/default', @:privateAccess strumLine.strumScale * Flags.DEFAULT_NOTE_SCALE, animSuffix);
 
+		__t = funkin.backend.utils.LoadTimer.acc('Note.new B: Paths.image + customTypePathExists + recycle', __t);
 		if (PlayState.instance != null)
 			event = PlayState.instance.gameAndCharsEvent("onNoteCreation", event);
+		__t = funkin.backend.utils.LoadTimer.acc('Note.new C: scripts onNoteCreation', __t);
 
 		this.animSuffix = event.animSuffix;
 		if (!event.cancelled) {
@@ -196,6 +200,7 @@ class Note extends FlxSprite
 			}
 		}
 
+		__t = funkin.backend.utils.LoadTimer.acc('Note.new D: frames + animaciones', __t);
 		updateHitbox();
 
 		if (isSustainNote && prevNote != null)
@@ -214,9 +219,12 @@ class Note extends FlxSprite
 			animation.play("scroll");
 		}
 
+		__t = funkin.backend.utils.LoadTimer.acc('Note.new E: hitbox + animation.play', __t);
 		if (PlayState.instance != null) {
 			PlayState.instance.splashHandler.getSplashGroup(splash);
+			__t = funkin.backend.utils.LoadTimer.acc('Note.new F: getSplashGroup', __t);
 			PlayState.instance.gameAndCharsEvent("onPostNoteCreation", event);
+			__t = funkin.backend.utils.LoadTimer.acc('Note.new G: scripts onPostNoteCreation', __t);
 		}
 	}
 

@@ -130,6 +130,7 @@ class StrumLine extends FlxTypedGroup<Strum> {
 	public function generate(strumLine:ChartStrumLine, ?startTime:Float) {
 		// TODO: implement double generate call support if needed
 
+		var __tg = funkin.backend.utils.LoadTimer.now();
 		var total = 0;
 		if (strumLine.notes != null) for(note in strumLine.notes) {
 			if (startTime != null && startTime > note.time)
@@ -147,6 +148,7 @@ class StrumLine extends FlxTypedGroup<Strum> {
 		}
 
 		notes.preallocate(total);
+		__tg = funkin.backend.utils.LoadTimer.acc('generate: contar notas', __tg);
 
 		var il = 0;
 
@@ -171,7 +173,10 @@ class StrumLine extends FlxTypedGroup<Strum> {
 				}
 			}
 		}
+		__tg = funkin.backend.utils.LoadTimer.acc('generate: bucle new Note (todo)', __tg);
 		notes.sortNotes();
+		__tg = funkin.backend.utils.LoadTimer.acc('generate: sortNotes', __tg);
+		funkin.backend.utils.LoadTimer.flushAcc('strumline con ' + total + ' notas');
 
 		var scrollSpeed = strumLine.scrollSpeed;
 		if(scrollSpeed == null) if (PlayState.instance != null) scrollSpeed = PlayState.instance.scrollSpeed;
