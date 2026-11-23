@@ -146,7 +146,7 @@
 	<haxelib name="nape-haxe4" if="NAPE_ENABLED"/>
 
 	<haxelib name="hscript-improved" />
-	<haxelib name="mobile-controls" />
+	<assets path="assets/mobile" rename="mobile" embed="false" />
 	<haxedef name="mobile_controls_allow_mouse_clicks" if="desktop"/>
 	<haxelib name="hxdiscord_rpc" if="DISCORD_RPC"/>
 	<haxelib name="markdown" />
