@@ -55,16 +55,16 @@ class Hitbox extends MobileInputHandler
 	 *
 	 * @param   Mode   The Hitbox mode. `Test` for example.
 	 * @param   GlobalAlpha   The alpha of hints. `0.7` for example.
-	 * @param   DisableCreation   The hint creation.
+	 * @param   CreateHints   If `false`, the library does not create the hints (the subclass does it).
 	 */
 	 
-	public function new(?Mode:String, ?disableCreation:Bool = false, ?globalAlpha:Float = 0.7):Void
+	public function new(?Mode:String, ?createHints:Bool = true, ?globalAlpha:Float = 0.7):Void
 	{
 		instance = this;
 		super();
 		this.globalAlpha = globalAlpha;
 
-		if (!disableCreation && Mode != null)
+		if (createHints && Mode != null)
 		{
 			if (!MobileConfig.hitboxModes.exists(Mode))
 				throw 'The HitboxMode "$Mode" doesn\'t exists.';
