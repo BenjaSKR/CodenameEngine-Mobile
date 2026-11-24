@@ -50,9 +50,15 @@ class MobileOptions extends TreeMenuScreen
 			["No Gradient", "No Gradient (Old)", "Gradient"], 'hitboxType'));
 		add(new ArrayOption(getNameID('hitboxMode'), getDescID('hitboxMode'), HitboxModes, HitboxModes, 'hitboxMode'));
 		add(new Checkbox(getNameID('hitboxPos'), getDescID('hitboxPos'), "hitboxPos"));
+		add(new NumOption(getNameID('hitboxAlpha'), getDescID('hitboxAlpha'), 0.0, 1.0, 0.1, "hitboxAlpha", (alpha:Float) ->
+		{
+			var hb = MusicBeatState.instance.mobileManager.hitbox;
+			if (hb != null) hb.alpha = mobile.MobileControlManager.visibleAlpha(alpha);
+		}));
 		add(new NumOption(getNameID('controlsAlpha'), getDescID('controlsAlpha'), 0.0, 1.0, 0.1, "controlsAlpha", (alpha:Float) ->
 		{
-			MusicBeatState.instance.mobileManager.mobilePad.alpha = alpha;
+			var pad = MusicBeatState.instance.mobileManager.mobilePad;
+			if (pad != null) pad.alpha = mobile.MobileControlManager.visibleAlpha(alpha);
 			if (funkin.backend.system.Controls.instance.mobileC)
 			{
 				FlxG.sound.volumeUpKeys = [];
