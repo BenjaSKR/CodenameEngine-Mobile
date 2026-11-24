@@ -37,21 +37,10 @@ class MobileOptions extends TreeMenuScreen
 		return mergedList;
 	}
 
-	#if android
-	var storageTypes:Array<String> = ["EXTERNAL_DATA", "EXTERNAL_MEDIA", "EXTERNAL"];
-	var customPaths:Array<String> = MobileUtil.getCustomStorageDirectories(false);
-	final lastExternal:String = Options.storageType;
-	var externalOption:ArrayOption;
-	#end
-
 	var HitboxModes:Array<String>;
 	public function new()
 	{
 		super('optionsTree.mobile-name', 'optionsTree.mobile-name', 'MobileOptions.', ['LEFT_FULL', 'A_B']);
-		#if android
-		storageTypes = storageTypes.concat(customPaths); //Get Custom Paths From File
-		#end
-
 		HitboxModes = mergeAllTextsNamed("assets/mobile/Hitbox/HitboxModes/hitboxModeList.txt");
 		if ((HitboxModes == null))
 			HitboxModes = ["Normal"];
@@ -77,26 +66,10 @@ class MobileOptions extends TreeMenuScreen
 				FlxG.sound.muteKeys = [FlxKey.ZERO, FlxKey.NUMPADZERO];
 			}
 		}));
-		#if android
-		add(externalOption = new ArrayOption(getNameID('storageType'), getDescID('storageType'), storageTypes,
-			storageTypes, 'storageType'));
-		#end
 	}
 
 	override function close()
 	{
 		super.close();
-
-		#if android
-		if (lastExternal != externalOption.displayOptions[externalOption.currentSelection])
-		{
-			Options.save();
-			File.saveContent(MobileUtil.getStorageTypePath(), Options.storageType);
-			MobileUtil.initDirectory();
-			persistentUpdate = false;
-			funkin.backend.utils.NativeAPI.showMessageBox(TU.translate('MobileOptions.storageTypeChange-title'), TU.translate('MobileOptions.storageTypeChange-body'));
-			LimeSystem.exit(1);
-		}
-		#end
 	}
 }
