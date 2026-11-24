@@ -547,9 +547,11 @@ class Controls extends FlxActionSet
 	@:noCompletion
 	private function get_mobileC():Bool
 	{
-		if (Options.controlsAlpha >= 0.1)
-			return true;
-		else
-			return false;
+		// En movil los controles tactiles siempre estan activos: con opacidad 0 siguen funcionando (solo se ven invisibles).
+		#if mobile
+		return true;
+		#else
+		return Options.controlsAlpha >= 0.1;
+		#end
 	}
 }
