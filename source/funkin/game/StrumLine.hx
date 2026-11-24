@@ -320,9 +320,6 @@ class StrumLine extends FlxTypedGroup<Strum> {
 		__justPressed = CoolUtil.getDefault(event.justPressed, []);
 		__justReleased = CoolUtil.getDefault(event.justReleased, []);
 
-		for (k in 0...__justPressed.length)
-			if (__justPressed[k]) funkin.backend.utils.InputLog.tap(this, k, __updateNote_songPos);
-
 		if (__pressed.contains(true)) {
 			if (__justPressed.contains(true)) {
 				notes.forEachAlive(__inputProcessJustPressed);
