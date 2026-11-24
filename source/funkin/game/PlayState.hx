@@ -660,6 +660,8 @@ class PlayState extends MusicBeatState
 
 	@:dox(hide) override public function create()
 	{
+		funkin.backend.utils.InputLog.reset('PlayState ' + (SONG != null && SONG.meta != null ? SONG.meta.name : '?'));
+		funkin.backend.utils.HitchLog.reset('PlayState ' + (SONG != null && SONG.meta != null ? SONG.meta.name : '?'));
 		Note.__customNoteTypeExists = [];
 
 		// SCRIPTING & DATA INITIALIZATION
@@ -1392,6 +1394,7 @@ class PlayState extends MusicBeatState
 	@:dox(hide)
 	override public function update(elapsed:Float)
 	{
+		funkin.backend.utils.HitchLog.tick(Conductor.songPosition, Conductor.curStep);
 		scripts.call("update", [elapsed]);
 
 		if (inCutscene) {
@@ -1856,6 +1859,7 @@ class PlayState extends MusicBeatState
 	public function noteMiss(strumLine:StrumLine, note:Note, ?direction:Int, ?player:Int):Void
 	{
 		var hasNote:Bool = note != null;
+		if (hasNote) funkin.backend.utils.InputLog.miss(Conductor.songPosition, note);
 		var playerID:Null<Int> = hasNote ? strumLines.members.indexOf(strumLine) : player;
 		var directionID:Null<Int> = hasNote ? note.strumID : direction;
 		if (playerID == null || directionID == null || playerID == -1) return;
