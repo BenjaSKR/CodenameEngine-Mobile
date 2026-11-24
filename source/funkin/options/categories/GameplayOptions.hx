@@ -73,7 +73,7 @@ class AdvancedGameplayOptions extends TreeMenuScreen {
 			new Checkbox(getNameID('streamedMusic'), getDescID('streamedMusic'), 'streamedMusic'),
 			new Checkbox(getNameID('streamedVocals'), getDescID('streamedVocals'), 'streamedVocals')
 		]) {
-			checkbox.locked = false; // desbloqueado para probar streaming en la V1
+			checkbox.locked = true;
 			add(checkbox);
 		}
 	}
