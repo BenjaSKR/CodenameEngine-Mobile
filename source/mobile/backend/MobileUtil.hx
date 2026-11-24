@@ -145,6 +145,20 @@ class MobileUtil
 			AndroidSettings.requestSetting('MANAGE_APP_ALL_FILES_ACCESS_PERMISSION');
 	}
 
+	/**
+	 * Espera (hasta `maxSeconds`) a que el usuario conceda "acceso a todos los archivos".
+	 * Sin esto la copia de assets empezaba antes de tener el permiso y fallaba en la primera apertura.
+	 */
+	public static function waitForStorageAccess(maxSeconds:Float = 600):Void
+	{
+		#if android
+		if (AndroidVersion.SDK_INT < 30) return; // antes de Android 11 no hay pantalla de "todos los archivos"
+		var start = Sys.time();
+		while (!AndroidEnvironment.isExternalStorageManager() && (Sys.time() - start) < maxSeconds)
+			Sys.sleep(0.25);
+		#end
+	}
+
 	public static var lastGettedPermission:Int;
 	public static function chmodPermission(fullPath:String) {
 		var process = new Process('stat -c %a ${fullPath}');
