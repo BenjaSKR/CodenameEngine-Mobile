@@ -26,7 +26,7 @@ class MobileUtil
 {
 	#if sys
 	public static inline function getAssetDirectory():String
-		return #if android haxe.io.Path.addTrailingSlash("/sdcard/Android/data/com.yoshman29.codenameengine/files") #elseif ios lime.system.System.documentsDirectory #else Sys.getCwd() #end;
+		return #if android haxe.io.Path.addTrailingSlash("/sdcard/.CodenameEngine") #elseif ios lime.system.System.documentsDirectory #else Sys.getCwd() #end;
 
 	#if android
 	public static inline function getCustomStoragePath():String
@@ -67,10 +67,8 @@ class MobileUtil
 	public static var currentDirectory:String;
 	public static function initDirectory():String {
 		var daPath:String = '';
-		if (!FileSystem.exists(getStorageTypePath()))
-			File.saveContent(getStorageTypePath(), Options.storageType);
-
-		var curStorageType:String = File.getContent(getStorageTypePath());
+		// Almacenamiento fijo: siempre /sdcard/.CodenameEngine (se ignora storagetype.txt y la opcion del menu)
+		var curStorageType:String = 'EXTERNAL';
 
 		/* Put this there because I don't want to override original paths, also brokes the normal storage system */
 		for (line in getCustomStorageDirectories(true))
