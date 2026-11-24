@@ -27,12 +27,16 @@ class MobileControlManager implements IFlxDestroyable {
 		//trace("MobileControlManager initialized.");
 	}
 
+	/** Con opacidad 0 los botones dejarian de existir para el motor; se usa un valor minimo imperceptible. */
+	public static inline function visibleAlpha(a:Float):Float
+		return a < 0.00001 ? 0.00001 : a;
+
 	//for lua shit
 	public function makeMobilePad(DPad:String, Action:String)
 	{
 		if (mobilePad != null) removeMobilePad();
 		mobilePad = new FunkinMobilePad(DPad, Action);
-		mobilePad.alpha = Options.controlsAlpha;
+		mobilePad.alpha = visibleAlpha(Options.controlsAlpha);
 	}
 
 	public function addMobilePad(DPad:String, Action:String)
@@ -68,7 +72,7 @@ class MobileControlManager implements IFlxDestroyable {
 	{
 		if (hitbox != null) removeHitbox();
 		hitbox = new FunkinHitbox(mode, hints);
-		hitbox.alpha = Options.controlsAlpha;
+		hitbox.alpha = visibleAlpha(Options.hitboxAlpha);
 	}
 
 	public function addHitbox(?mode:String, ?hints:Bool)
