@@ -7,7 +7,9 @@ class FunkinGame extends FlxGame {
 	public override function switchState() {
 		super.switchState();
 		// draw once to put all images in gpu then put the last update time to now to prevent lag spikes or whatever
+		var __t = funkin.backend.utils.AssetTimer.now();
 		draw();
+		funkin.backend.utils.AssetTimer.drawDone(__t);
 		_total = ticks = getTicks();
 		skipNextTickUpdate = true;
 	}
