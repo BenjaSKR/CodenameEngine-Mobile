@@ -18,9 +18,9 @@ class AppearanceOptions extends TreeMenuScreen {
 	}
 
 	private function __changeFPS(value:Float) {
-		var framerate = Math.floor(value);
-		if (FlxG.updateFramerate < framerate) FlxG.drawFramerate = FlxG.updateFramerate = framerate;
-		else FlxG.updateFramerate = FlxG.drawFramerate = framerate;
+		Options.framerate = Math.floor(value);
+		Options.framerateAuto = false; // el jugador eligió a mano
+		Options.applyFramerate();
 	}
 }
 
