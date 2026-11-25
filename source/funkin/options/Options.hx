@@ -53,6 +53,11 @@ class Options
 	@:dox(hide) @:doNotSave public static var hitWindow:Float = 250; // DEPRECATED
 	public static var songOffset:Float = 0;
 	public static var framerate:Int = #if mobile 60 #else 120 #end;
+	/**
+	 * Si es true (por defecto en móvil), el juego usa los Hz de la pantalla.
+	 * Se desactiva solo cuando cambias los FPS a mano en Opciones > Apariencia.
+	 */
+	public static var framerateAuto:Bool = #if mobile true #else false #end;
 	public static var gpuOnlyBitmaps:Bool = #if (mac || web || mobile) false #else true #end; // causes issues on mac and web
 	public static var language = "en"; // default to english, Flags.DEFAULT_LANGUAGE should not modify this
 	public static var streamedMusic:Bool = false;
@@ -243,8 +248,36 @@ class Options
 
 		FlxG.sound.defaultMusicGroup.volume = volumeMusic;
 		FlxG.autoPause = autoPause;
-		if (FlxG.updateFramerate < framerate) FlxG.drawFramerate = FlxG.updateFramerate = framerate;
-		else FlxG.updateFramerate = FlxG.drawFramerate = framerate;
+		applyFramerate();
+	}
+
+	/** Hz reales de la pantalla (60 si no se puede leer). */
+	public static function getRefreshRate():Int {
+		try {
+			var d = lime.system.System.getDisplay(0);
+			if (d != null && d.currentMode != null && d.currentMode.refreshRate >= 30)
+				return d.currentMode.refreshRate;
+		} catch (e) {}
+		return 60;
+	}
+
+	public static function applyFramerate() {
+		var refresh = getRefreshRate();
+		#if mobile
+		if (framerateAuto) framerate = refresh;
+		#end
+
+		// Tasa de update (la que ve el juego / scripts).
+		FlxG.updateFramerate = framerate;
+
+		// Tasa de dibujo: si el límite es >= Hz de la pantalla, no dejamos que el
+		// limitador de Lime (milisegundos enteros: 8ms = 125fps, 9ms = 111fps) mande;
+		// así el vsync marca el ritmo y los FPS quedan estables.
+		#if mobile
+		FlxG.drawFramerate = framerate >= refresh - 1 ? 1000 : framerate;
+		#else
+		FlxG.drawFramerate = framerate;
+		#end
 	}
 
 	public static function applyQuality() {
