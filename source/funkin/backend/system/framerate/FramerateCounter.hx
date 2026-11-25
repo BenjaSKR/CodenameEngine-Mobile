@@ -11,7 +11,7 @@ class FramerateCounter extends Sprite {
 
 	private var frameCount:Int = 0;
 
-	private var accumulatedTime:Float = openfl.Lib.getTimer();
+	private var accumulatedTime:Float = haxe.Timer.stamp() * 1000;
 
 	private final updateInterval:Float = 1 / 15;
 	private var lastUpdateTime:Float = 0;
@@ -51,7 +51,7 @@ class FramerateCounter extends Sprite {
 			return;
 		}
 
-		final timer = openfl.Lib.getTimer();
+		final timer = haxe.Timer.stamp() * 1000;
 
 		final time = timer - accumulatedTime;
 
