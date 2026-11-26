@@ -94,12 +94,12 @@ class Strum extends FlxSprite {
 	**/
 	public var hitboxID:String = null;
 
-	private inline function __hitbox():mobile.MobileInputHandler
+	@:dox(hide) public inline function __hitbox():mobile.MobileInputHandler
 		return PlayState.instance?.mobileManager?.hitbox;
 
 	@:dox(hide) public inline function __getPressed(strumLine:StrumLine):Bool {
-		if (hitboxID != null) { var h = __hitbox(); if (h != null) return h.pressed(hitboxID); }
-		return getPressed != null ? getPressed(strumLine) : strumLine.members.length != 4 ? ControlsUtil.getPressed(strumLine.controls, strumLine.members.length+"k"+ID) : switch(ID) {
+		var __h = hitboxID != null ? __hitbox() : null;
+		return __h != null ? __h.pressed(hitboxID) : getPressed != null ? getPressed(strumLine) : strumLine.members.length != 4 ? ControlsUtil.getPressed(strumLine.controls, strumLine.members.length+"k"+ID) : switch(ID) {
 			case 0: strumLine.controls.NOTE_LEFT;
 			case 1: strumLine.controls.NOTE_DOWN;
 			case 2: strumLine.controls.NOTE_UP;
@@ -108,8 +108,8 @@ class Strum extends FlxSprite {
 		}
 	}
 	@:dox(hide) public inline function __getJustPressed(strumLine:StrumLine) {
-		if (hitboxID != null) { var h = __hitbox(); if (h != null) return h.justPressed(hitboxID); }
-		return getJustPressed != null ? getJustPressed(strumLine) : strumLine.members.length != 4 ? ControlsUtil.getJustPressed(strumLine.controls, strumLine.members.length+"k"+ID) : switch(ID) {
+		var __h = hitboxID != null ? __hitbox() : null;
+		return __h != null ? __h.justPressed(hitboxID) : getJustPressed != null ? getJustPressed(strumLine) : strumLine.members.length != 4 ? ControlsUtil.getJustPressed(strumLine.controls, strumLine.members.length+"k"+ID) : switch(ID) {
 			case 0: strumLine.controls.NOTE_LEFT_P;
 			case 1: strumLine.controls.NOTE_DOWN_P;
 			case 2: strumLine.controls.NOTE_UP_P;
@@ -118,8 +118,8 @@ class Strum extends FlxSprite {
 		}
 	}
 	@:dox(hide) public inline function __getJustReleased(strumLine:StrumLine) {
-		if (hitboxID != null) { var h = __hitbox(); if (h != null) return h.justReleased(hitboxID); }
-		return getJustReleased != null ? getJustReleased(strumLine) : strumLine.members.length != 4 ? ControlsUtil.getJustReleased(strumLine.controls, strumLine.members.length+"k"+ID) : switch(ID) {
+		var __h = hitboxID != null ? __hitbox() : null;
+		return __h != null ? __h.justReleased(hitboxID) : getJustReleased != null ? getJustReleased(strumLine) : strumLine.members.length != 4 ? ControlsUtil.getJustReleased(strumLine.controls, strumLine.members.length+"k"+ID) : switch(ID) {
 			case 0: strumLine.controls.NOTE_LEFT_R;
 			case 1: strumLine.controls.NOTE_DOWN_R;
 			case 2: strumLine.controls.NOTE_UP_R;
