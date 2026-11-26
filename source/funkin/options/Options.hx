@@ -267,17 +267,9 @@ class Options
 		if (framerateAuto) framerate = refresh;
 		#end
 
-		// Tasa de update (la que ve el juego / scripts).
-		FlxG.updateFramerate = framerate;
-
-		// Tasa de dibujo: si el límite es >= Hz de la pantalla, no dejamos que el
-		// limitador de Lime (milisegundos enteros: 8ms = 125fps, 9ms = 111fps) mande;
-		// así el vsync marca el ritmo y los FPS quedan estables.
-		#if mobile
-		FlxG.drawFramerate = framerate >= refresh - 1 ? 1000 : framerate;
-		#else
-		FlxG.drawFramerate = framerate;
-		#end
+		// Igual que el engine original: update y draw al mismo valor.
+		if (FlxG.updateFramerate < framerate) FlxG.drawFramerate = FlxG.updateFramerate = framerate;
+		else FlxG.updateFramerate = FlxG.drawFramerate = framerate;
 	}
 
 	public static function applyQuality() {
