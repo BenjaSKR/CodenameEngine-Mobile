@@ -126,9 +126,25 @@ class ModsFolderLibrary extends AssetLibrary implements IModsAssetLibrary {
 		return [];
 	}
 
+	// Cache de FileSystem.exists (en /sdcard cada consulta es lenta). Positivos: validos hasta el
+	// proximo cambio de state. Negativos: ademas caducan a los 3 s por si un script crea el archivo.
+	static var __existsCache:Map<String, Float> = [];
+
+	public static function clearExistsCache():Void
+		__existsCache.clear();
+
+	function __fileExists():Bool {
+		var path = getAssetPath();
+		var c = __existsCache.get(path);
+		if (c != null && (c == 0 || Sys.time() - c < 3.0)) return c == 0;
+		var r = FileSystem.exists(path);
+		__existsCache.set(path, r ? 0 : Sys.time());
+		return r;
+	}
+
 	public override function exists(asset:String, type:String):Bool {
 		var __top = AssetTimer.enter(), __t = AssetTimer.now();
-		var __r = __parseAsset(asset) && FileSystem.exists(getAssetPath());
+		var __r = __parseAsset(asset) && __fileExists();
 		AssetTimer.leave();
 		if (__top) AssetTimer.add("busqueda de rutas (getPath/exists)", asset, __t);
 		return __r;

@@ -18,13 +18,31 @@ class Paths
 
 	public static var tempFramesCache:Map<String, FlxFramesCollection> = [];
 
+	/** Cache de getPath: evita recorrer todas las carpetas en cada busqueda fallida. Se vacia en cada cambio de state. */
+	static var __pathCache:Map<String, String> = [];
+
+	public static function clearPathCache():Void {
+		__pathCache.clear();
+		funkin.backend.assets.ModsFolderLibrary.clearExistsCache();
+	}
+
 	public static function init() {
 		FlxG.signals.preStateSwitch.add(function() {
 			tempFramesCache.clear();
+			clearPathCache();
 		});
 	}
 
-	public static inline function getPath(file:String, ?library:String) {
+	public static function getPath(file:String, ?library:String):String {
+		var key = library != null ? library + "|" + file : file;
+		var cached = __pathCache.get(key);
+		if (cached != null) return cached;
+		var result = __getPathSlow(file, library);
+		__pathCache.set(key, result);
+		return result;
+	}
+
+	static function __getPathSlow(file:String, ?library:String):String {
 		var returnedPath:String = library != null ? '$library:assets/$library/$file' : 'assets/$file';
 		#if (sys && !windows)
 		returnedPath = Path.normalize(returnedPath);
