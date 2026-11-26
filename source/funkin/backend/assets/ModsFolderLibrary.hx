@@ -1,7 +1,6 @@
 package funkin.backend.assets;
 
 import openfl.utils.AssetLibrary;
-import funkin.backend.utils.AssetTimer;
 import lime.media.AudioBuffer;
 import lime.graphics.Image;
 import lime.text.Font;
@@ -42,31 +41,21 @@ class ModsFolderLibrary extends AssetLibrary implements IModsAssetLibrary {
 	}
 
 	public override function getAudioBuffer(id:String):AudioBuffer {
-		var __top = AssetTimer.enter(), __t = AssetTimer.now();
-		if (!exists(id, "SOUND")) {
-			AssetTimer.leave();
+		if (!exists(id, "SOUND"))
 			return null;
-		}
 		var path = getAssetPath();
 		editedTimes[id] = FileSystem.stat(path).mtime.getTime();
 		var e = AudioBuffer.fromFile(path);
 		// LimeAssets.cache.audio.set('$libName:$id', e);
-		AssetTimer.leave();
-		if (__top) AssetTimer.add("audio (decodificar)", id, __t);
 		return e;
 	}
 
 	public override function getBytes(id:String):Bytes {
-		var __top = AssetTimer.enter(), __t = AssetTimer.now();
-		if (!exists(id, "BINARY")) {
-			AssetTimer.leave();
+		if (!exists(id, "BINARY"))
 			return null;
-		}
 		var path = getAssetPath();
 		editedTimes[id] = FileSystem.stat(path).mtime.getTime();
 		var e = Bytes.fromFile(path);
-		AssetTimer.leave();
-		if (__top) AssetTimer.add("texto/json/xml/bytes (leer)", id, __t);
 		return e;
 	}
 
@@ -79,29 +68,18 @@ class ModsFolderLibrary extends AssetLibrary implements IModsAssetLibrary {
 	}
 
 	public override function getImage(id:String):Image {
-		var __top = AssetTimer.enter(), __t = AssetTimer.now();
-		if (!exists(id, "IMAGE")) {
-			AssetTimer.leave();
+		if (!exists(id, "IMAGE"))
 			return null;
-		}
 		var path = getAssetPath();
 		editedTimes[id] = FileSystem.stat(path).mtime.getTime();
 
 		var e = Image.fromFile(path);
-		AssetTimer.leave();
-		if (__top) {
-			if (e != null) AssetTimer.addImageSize(e.width, e.height);
-			AssetTimer.add("PNG (decodificar)", id, __t, e != null ? e.width + "x" + e.height : "");
-		}
 		return e;
 	}
 
 	public override function getPath(id:String):String {
-		var __top = AssetTimer.enter(), __t = AssetTimer.now();
-		var __r = __parseAsset(id) ? getAssetPath() : null;
-		AssetTimer.leave();
-		if (__top) AssetTimer.add("busqueda de rutas (getPath/exists)", id, __t);
-		return __r;
+		if (!__parseAsset(id)) return null;
+		return getAssetPath();
 	}
 
 	public inline function getFolders(folder:String):Array<String>
@@ -143,11 +121,8 @@ class ModsFolderLibrary extends AssetLibrary implements IModsAssetLibrary {
 	}
 
 	public override function exists(asset:String, type:String):Bool {
-		var __top = AssetTimer.enter(), __t = AssetTimer.now();
-		var __r = __parseAsset(asset) && __fileExists();
-		AssetTimer.leave();
-		if (__top) AssetTimer.add("busqueda de rutas (getPath/exists)", asset, __t);
-		return __r;
+		if(!__parseAsset(asset)) return false;
+		return __fileExists();
 	}
 
 	private function getAssetPath() {
