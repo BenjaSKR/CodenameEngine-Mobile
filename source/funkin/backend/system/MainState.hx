@@ -28,9 +28,11 @@ class MainState extends FlxState {
 	public static var initiated:Bool = false;
 	public override function create() {
 		super.create();
+		funkin.backend.utils.AssetTimer.begin();
 		if (!initiated) {
 			Main.loadGameSettings();
 		}
+		funkin.backend.utils.AssetTimer.mark("loadGameSettings (solo 1a vez)");
 
 		initiated = true;
 
@@ -44,6 +46,7 @@ class MainState extends FlxState {
 		FlxG.sound.destroy(true);
 
 		Paths.assetsTree.reset();
+		funkin.backend.utils.AssetTimer.mark("limpieza inicial + assetsTree.reset");
 
 		#if MOD_SUPPORT
 		inline function isDirectory(path:String):Bool
@@ -137,17 +140,24 @@ class MainState extends FlxState {
 		Flags.reset();
 		Flags.load();
 		funkin.savedata.FunkinSave.init();
+		funkin.backend.utils.AssetTimer.mark("cargar librerias del mod + Flags + FunkinSave");
 
 		TranslationUtil.findAllLanguages();
 		TranslationUtil.setLanguage(Flags.DISABLE_LANGUAGES ? Flags.DEFAULT_LANGUAGE : null);
+		funkin.backend.utils.AssetTimer.mark("traducciones");
 		ModsFolder.onModSwitch.dispatch(ModsFolder.currentModFolder); // Loads global.hx
+		funkin.backend.utils.AssetTimer.mark("onModSwitch (global.hx y scripts)");
 		MusicBeatTransition.script = Flags.DEFAULT_TRANSITION_SCRIPT;
 		WindowUtils.resetAffixes(false);
 		WindowUtils.setWindow();
 		Main.refreshAssets();
+		funkin.backend.utils.AssetTimer.mark("refreshAssets");
 		DiscordUtil.init();
+		funkin.backend.utils.AssetTimer.mark("DiscordUtil");
 		EventsData.reloadEvents();
+		funkin.backend.utils.AssetTimer.mark("EventsData.reloadEvents");
 		ControlsUtil.loadCustomControls();
+		funkin.backend.utils.AssetTimer.mark("loadCustomControls");
 		TitleState.initialized = false;
 
 		if (Framerate.isLoaded)
