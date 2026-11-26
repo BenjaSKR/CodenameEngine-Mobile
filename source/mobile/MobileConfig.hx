@@ -86,34 +86,18 @@ class MobileConfig {
 		}
 	}
 
+	/**
+	 * Lista los archivos de una carpeta de assets.
+	 * ANTES usaba Assets.list() (recorre TODOS los archivos de todas las librerias: ~4.8 s en /sdcard).
+	 * Ahora solo lee esa carpeta en cada libreria.
+	 */
 	private static function readDirectory(path:String):Array<String>
 	{
-		var filteredList:Array<String> = Assets.list().filter(f -> f.startsWith(path));
+		if (!path.endsWith('/')) path += '/';
 		var results:Array<String> = [];
-		for (i in filteredList.copy())
-		{
-			var slashsCount:Int = path.split('/').length;
-			if (path.endsWith('/'))
-				slashsCount -= 1;
-
-			if (i.split('/').length - 1 != slashsCount)
-			{
-				filteredList.remove(i);
-			}
-		}
-		for (item in filteredList)
-		{
-			@:privateAccess
-			for (library in lime.utils.Assets.libraries.keys())
-			{
-				var libPath:String = '$library:$item';
-				if (library != 'default' && Assets.exists(libPath) && !results.contains(libPath))
-					results.push(libPath);
-				else if (Assets.exists(item) && !results.contains(item))
-					results.push(item);
-			}
-		}
-		return results.map(f -> f.substr(f.lastIndexOf("/") + 1));
+		for (f in funkin.backend.assets.Paths.assetsTree.getFiles(path))
+			if (!results.contains(f)) results.push(f);
+		return results;
 	}
 
 	#if MOD_SUPPORT
