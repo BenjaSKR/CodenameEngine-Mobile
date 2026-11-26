@@ -16,6 +16,22 @@ class AssetTimer {
 	static var slow:Array<{kind:String, id:String, t:Float, info:String}> = [];
 	static var pixels:Float = 0;
 	static var lines:Array<String> = [];
+	static var phases:Array<String> = [];
+	static var lastMark:Float = 0;
+
+	/** Empieza a contar fases (llamar al inicio de un create()). */
+	public static function begin():Void {
+		init();
+		reset();
+		stateStart = lastMark = Sys.time();
+	}
+
+	/** Marca una fase: guarda cuanto paso desde la marca anterior. */
+	public static function mark(label:String):Void {
+		var n = Sys.time();
+		phases.push("    fase: " + label + ": " + r(n - lastMark) + " s");
+		lastMark = n;
+	}
 
 	public static inline function now():Float
 		return Sys.time();
@@ -53,6 +69,8 @@ class AssetTimer {
 		slow = [];
 		pixels = 0;
 		depth = 0;
+		phases = [];
+		lastMark = Sys.time();
 	}
 
 	static function r(v:Float):String
@@ -82,6 +100,11 @@ class AssetTimer {
 		lines.push("  RESTO (scripts, XML/JSON ya leidos, crear sprites, logica del juego): " + r(total - measured) + " s");
 		if (pixels > 0)
 			lines.push("  Imagenes decodificadas en este state: ~" + Math.round(pixels * 4 / 1048576) + " MB de pixeles (RGBA)");
+
+		if (phases.length > 0) {
+			lines.push("  --- fases (en orden) ---");
+			for (p in phases) lines.push(p);
+		}
 
 		slow.sort((a, b) -> a.t < b.t ? 1 : -1);
 		lines.push("  --- 40 archivos mas lentos (>= 0.02 s) ---");
