@@ -159,18 +159,24 @@ class MainState extends FlxState {
 		ControlsUtil.loadCustomControls();
 		funkin.backend.utils.AssetTimer.mark("loadCustomControls");
 		TitleState.initialized = false;
+		funkin.backend.utils.AssetTimer.mark("TitleState.initialized");
 
 		if (Framerate.isLoaded)
 			Framerate.instance.reload();
 
+		funkin.backend.utils.AssetTimer.mark("Framerate.reload");
+
 		#if sys
 		CoolUtil.safeAddAttributes('.temp/', NativeAPI.FileAttribute.HIDDEN);
 		#end
+		funkin.backend.utils.AssetTimer.mark("safeAddAttributes (.temp)");
 
 		for (lib in ModsFolder.getLoadedModsLibs()) {
 			if (!(lib is ZipFolderLibrary)) continue;
 			if (cast(lib, ZipFolderLibrary).PRELOAD_VIDEOS) cast(lib, ZipFolderLibrary).precacheVideos();
 		}
+
+		funkin.backend.utils.AssetTimer.mark("precacheVideos (zip)");
 
 		var startState:Class<FlxState> = Flags.DISABLE_WARNING_SCREEN ? TitleState : funkin.menus.WarningState;
 
@@ -187,6 +193,9 @@ class MainState extends FlxState {
 			}
 		}
 
-		FlxG.switchState(cast Type.createInstance(startState, []));
+		var __next:FlxState = cast Type.createInstance(startState, []);
+		funkin.backend.utils.AssetTimer.mark("crear " + Type.getClassName(startState) + " (constructor)");
+		FlxG.switchState(__next);
+		funkin.backend.utils.AssetTimer.mark("FlxG.switchState (pedido)");
 	}
 }
