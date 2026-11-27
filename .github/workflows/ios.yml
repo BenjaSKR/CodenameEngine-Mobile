@@ -38,6 +38,17 @@ jobs:
       - name: Installing/Updating libraries
         run: |
           haxe -cp commandline -D analyzer-optimize --run Main setup -s
+      - name: Pin libraries to the versions this port was made for
+        run: |
+          cd .haxelib/hscript-improved/git
+          git fetch --depth 1 origin 68358bb08440be64fbd2d36928b192f2119a2385
+          git checkout FETCH_HEAD
+          git log -1 --format="hscript-improved: %h %ad %s" --date=short
+          cd ../../lime/git
+          git fetch --depth 1 origin 1ee840e40b0b40fc806f48e5ea5e3d9b39a97bff
+          git checkout -f FETCH_HEAD
+          git log -1 --format="lime: %h %ad %s" --date=short
+
       - name: Fix Haxelib
         run: |
           haxelib set lime git
