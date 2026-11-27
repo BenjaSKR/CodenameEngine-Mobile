@@ -56,6 +56,16 @@ jobs:
           echo "emutls en liblime-64.so (debe decir FUNC ... DEFAULT con un numero, NO UND):"
           readelf -Ws --dyn-syms ndll/Android/liblime-64.so | grep emutls || true
 
+      - name: Patch hxdiscord_rpc for Android
+        run: |
+          for f in $(find .haxelib/hxdiscord_rpc -name Build.xml); do
+            if grep -q '<section if="linux">' "$f"; then
+              sed -i 's/<section if="linux">/<section if="linux || android">/' "$f"
+              echo "Parcheado: $f"
+              grep -n 'if="linux' "$f"
+            fi
+          done
+
       - name: Configure Android
         run: |
           haxelib run lime setup -alias -y
