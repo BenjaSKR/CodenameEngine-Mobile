@@ -120,6 +120,13 @@ class Assets
 				bitmapData.__fromImage(image);
 			} else #end {
 				bitmapData = BitmapData.fromImage(image);
+				// Sube la textura a la GPU ya al cargar (evita el spike al verla por primera vez),
+				// pero conserva la copia en RAM (no baja la RAM como gpuOnlyBitmaps).
+				#if (!macro && mobile)
+				if (pushToGPU && flixel.FlxG.stage != null && flixel.FlxG.stage.context3D != null) {
+					try { bitmapData.getTexture(flixel.FlxG.stage.context3D); } catch (e) {}
+				}
+				#end
 			}
 			#end
 
