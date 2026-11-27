@@ -244,13 +244,6 @@
 	<icon path="art/teaser.png" if="mobile" />
 
 	<!-- Do whatever you want I'm tired uninstall and install everytime -->
-	<!-- Permisos de red (necesarios para Discord RPC en Android) -->
-	<section if="android">
-		<config:android permission="android.permission.INTERNET" />
-		<config:android permission="android.permission.ACCESS_NETWORK_STATE" />
-		<config:android permission="android.permission.ACCESS_WIFI_STATE" />
-	</section>
-
 	<certificate path="key.keystore" password="psychengine" alias="psychport" alias-password="psychengine" if="android" unless="debug" />
 
 	<haxedef name="lime_use_old_deltatime" />
