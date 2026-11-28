@@ -273,7 +273,9 @@ final class DiscordUtil
 		handlers.joinGame = cpp.Function.fromStaticFunction(onJoin);
 		handlers.joinRequest = cpp.Function.fromStaticFunction(onJoinReq);
 		handlers.spectateGame = cpp.Function.fromStaticFunction(onSpectate);
+		#if !android
 		handlers.anyResponse = cpp.Function.fromStaticFunction(onAnyResponse);
+		#end
 		Discord.Initialize(id, cpp.RawPointer.addressOf(handlers), 1, null);
 		stopThread = false;
 
