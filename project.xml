@@ -63,7 +63,7 @@
 
 	<!-- Comment this out to disable Discord RPC !-->
 	<section if="cpp">
-		<define name="DISCORD_RPC" if="desktop || android"/>
+		<define name="DISCORD_RPC" if="desktop"/>
 	</section>
 
 	<!-- Uncomment this to achive faster compile times, will strip extraneous and commonly unused features. -->
