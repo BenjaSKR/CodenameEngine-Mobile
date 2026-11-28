@@ -56,15 +56,10 @@ jobs:
           echo "emutls en liblime-v7.so (debe decir FUNC ... DEFAULT con un numero, NO UND):"
           readelf -Ws --dyn-syms ndll/Android/liblime-v7.so | grep emutls || true
 
-      - name: Patch hxdiscord_rpc for Android
+      - name: Use hxdiscord_rpc with Android support (misma libreria que el port de Psych)
         run: |
-          for f in $(find .haxelib/hxdiscord_rpc -name Build.xml); do
-            if grep -q '<section if="linux">' "$f"; then
-              sed -i 's/<section if="linux">/<section if="linux || android">/' "$f"
-              echo "Parcheado: $f"
-              grep -n 'if="linux' "$f"
-            fi
-          done
+          haxelib git hxdiscord_rpc https://github.com/FunkinPortingMobile/hxdiscord_rpc-android-support master
+          haxelib path hxdiscord_rpc
 
       - name: Configure Android
         run: |
